@@ -1,0 +1,50 @@
+#!/bin/sh
+#regular Colors
+Black='\e[0;30m'        # Black
+Red='\e[0;31m'          # Red
+Green='\e[0;32m'        # Green
+Yellow='\e[0;33m'       # Yellow
+Blue='\e[0;34m'         # Blue
+Purple='\e[0;35m'       # Purple
+Cyan='\e[0;36m'         # Cyan
+White='\e[0;37m'        # White
+
+#Bold
+BBlack='\e[1;30m'       # Black
+BRed='\e[1;31m'         # Red
+BGreen='\e[1;32m'       # Green
+BYellow='\e[1;33m'      # Yellow
+BBlue='\e[1;34m'        # Blue
+BPurple='\e[1;35m'      # Purple
+BCyan='\e[1;36m'        # Cyan
+BWhite='\e[1;37m'       # White
+
+logFile="/var/sankuai/logs/frameworks.test.log /var/sankuai/logs/php_error_log /var/sankuai/logs/frameworks.log"
+if [[ $# > 0 ]];then
+logFile=$*
+fi
+tail -F $logFile | awk '{
+    fc=NR%2+32;
+    preblank="";
+    showFile = 1;
+    showUrl = 1;
+    for(i=1;i<=NF;i++){
+        if ($i ~ /^WARNING$/ || $i ~ /^ERROR$/ || $i ~ /^phperrlog/) {
+            printf "%s\033[0;41m%s\033[0m",preblank,$i; 
+        } else if ($i ~ /\.php/ && showFile==1) {
+            match($i, /[a-zA-Z]+\.php/);
+            line=substr($i, 0, RSTART-1)"\033[0;37m"substr($i, RSTART);
+            printf "%s\033[0;%sm%s",preblank,fc,line;
+            showFile = 0;
+        } else if ($i ~ /http:\/\// && showUrl==1) {
+            match($i, /http:\/\//);
+        line=substr($i, 0, RSTART-1)"\033[0;37m"substr($i, RSTART);
+        printf "%s\033[0;%sm%s",preblank,fc,line;
+        showUrl = 0;
+    } else {
+        printf "%s\033[0;%sm%s",preblank,fc,$i;
+    }
+    preblank=" ";
+    }
+    print "\033[0m";
+}' 

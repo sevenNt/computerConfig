@@ -1,0 +1,2 @@
+#!/bin/sh
+php -d auto_prepend_file='/opt/meituan/mtf_test_www/prepend.php' $1

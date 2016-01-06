@@ -1,0 +1,51 @@
+#!/bin/sh
+#lsof -u zhengwei11 -c vim | grep '/opt/meituan/mtf_test_www/' | awk '{print substr($9,26,length($9)-29)}'| awk -F '.' -v u='zhengwei11@dev.sankuai.com:~' '{print "scp"$1""$2".php "u""$1""$2".php"}'
+case $1 in
+mtf | mtc | mtb)
+user=$(whoami)
+fhost=''
+fmainpath="/opt/meituan/$1_test_www/"
+greppath=""
+starti=5
+;;
+dev)
+user=$(whoami)
+fhost="$(whoami)@dev.sankuai.com:"
+fmainpath="~/mt/"
+starti=4
+;;
+*)
+user="sankuai"
+fhost="sankuai@$1.ptrd.sankuai.com:"
+fmainpath="/home/sankuai/src/web/www/"
+starti=7
+;;
+esac
+
+case $2 in
+mtf | mtc | mtb)
+thost=''
+tmainpath="/opt/meituan/$2_test_www/"
+;;
+dev)
+thost="$(whoami)@dev.sankuai.com:"
+tmainpath="~/mt/"
+;;
+*)
+thost="sankuai@$2.ptrd.sankuai.com:"
+tmainpath="/home/sankuai/src/web/www/"
+;;
+esac
+
+lsof -u $user -c vim | grep $fmainpath | grep 'vim'  | awk -F '/' -v starti=$starti '{
+    out=""
+    for(i=starti;i<=NF;i++){
+       out=out""$i"""/"
+    }
+    print out
+}' | awk -F '.' -v fmainpath=$fmainpath -v fhost=$fhost -v tmainpath=$tmainpath -v thost=$thost '
+{
+    fp=fhost""fmainpath""$1""$2".php"
+    tp=thost""tmainpath""$1""$2".php"
+    print "scp """fp" "tp
+}'
