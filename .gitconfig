@@ -1,0 +1,12 @@
+[core]
+	editor = /usr/bin/vim
+[user]
+	name = sevenNt
+	email = lesliezheng0105@yahoo.com
+[alias]
+    st = status
+    ci = commit
+    co = checkout
+    br = branch
+    unstage = reset HEAD --
+    last = log -1 HEAD
