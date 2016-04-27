@@ -21,7 +21,7 @@ Plugin 'ervandew/supertab'
 Plugin 'The-NERD-Commenter'
 "Plugin 'SirVer/ultisnips'
 "Plugin 'Valloric/YouCompleteMe'
-Plugin 'scrooloose/syntastic'
+Plugin 'scrooloose/syntastic' " 若语法检测插件失败看看是否配置了php环境变量
 "Plugin 't9md/vim-quickhl'
 " Plugin 'Lokaltog/vim-powerline'
 "Plugin 'scrooloose/nerdcommenter'
